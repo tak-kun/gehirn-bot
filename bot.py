@@ -2,6 +2,9 @@
 import config
 import telebot
 import sys
+import os
+
+#from sh import ping
 from telebot import types
 from datetime import datetime
 
@@ -10,7 +13,7 @@ bot = telebot.TeleBot(config.token)
 online_flag = True
 
 @bot.message_handler(content_types=["text"])
-def repeat_all_messages(message): # Название функции не играет никакой роли, в принципе
+def response(message): # Название функции не играет никакой роли, в принципе
     # bot.send_message(message.chat.id, message.text)
     # print(message.text)
     # str_time = datetime.now().strftime('%H:%M:%S')
@@ -22,9 +25,21 @@ def repeat_all_messages(message): # Название функции не игр�
     #     reply_markup=keyboard)
 
     #bot.send_message(message.chat.id, message.text)
-    print(message.text)
-    if message.text[0] == "/":
-        print('command enabled')
+    message_data = message.text
+    message_data = message_data.split()
+    if message_data[0] == "/ping":
+        print('ping command enabled')
+        try:
+            hostname = message_data[1]
+            response = os.system('ping -c 1 ' + hostname)
+            if response == 0:
+                bot.send_message(message.chat.id, 'Hostname is online!')
+            else:
+                bot.send_message(message.chat.id, 'Hostname is not available')
+        except:
+            bot.send_message(message.chat.id, 'Error ping')
+
+
 
 
 
