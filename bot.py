@@ -3,6 +3,7 @@ import config
 import telebot
 import sys
 import os
+import time
 
 #from sh import ping
 from telebot import types
@@ -38,9 +39,27 @@ def response(message): # Название функции не играет ни�
                 bot.send_message(message.chat.id, 'Hostname is not available')
         except:
             bot.send_message(message.chat.id, 'Error ping')
+    elif message_data[0] == "/temp":
+        try:
+            if message_data[1] == 'proc':
+                response = os.popen('vcgencmd measure_temp').readline()
+                response = response.replace("temp=","").replace("'C\n","")
+                bot.send_message(message.chat.id, response)
+                print(response)
+        except:
+            bot.send_message(message.chat.id, 'error temp')
 
+    elif message_data[0] == '/help':
+            response = "/ping _name_; /temp _name_;"
+            bot.send_message(message.chat.id, response)
 
+    elif message_data[0] == 'Привет':
+            response = "Hi, tak-kun! 😍"
+            bot.send_message(message.chat.id, response)
 
+    elif message_data[0] == "/poweroff":
+            bot.send_message(message.chat.id, "Good bye! 😌")
+            response = os.system('sudo poweroff')
 
 
 if __name__ == '__main__':
